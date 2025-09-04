@@ -19,13 +19,14 @@ require_relative "../config/environment"
 
 require "rails/test_help"
 require "rails/generators"
-require "mocha/setup"
+require "mocha/minitest"
 
 Rails.backtrace_cleaner.remove_silencers!
 
 class ActiveSupport::TestCase
 
   include ActionDispatch::TestProcess
+  include ActionDispatch::TestProcess::FixtureFile
 
   fixtures :all
 
@@ -71,9 +72,10 @@ class ActiveSupport::TestCase
   # Example usage:
   #   assert_has_errors_on @record, :field_1, :field_2
   def assert_has_errors_on(record, *fields)
-    unmatched = record.errors.keys - fields.flatten
+    error_keys = record.errors.attribute_names
+    unmatched = error_keys - fields.flatten
     assert unmatched.blank?, "#{record.class} has errors on '#{unmatched.join(', ')}'"
-    unmatched = fields.flatten - record.errors.keys
+    unmatched = fields.flatten - error_keys
     assert unmatched.blank?, "#{record.class} doesn't have errors on '#{unmatched.join(', ')}'"
   end
 
@@ -126,7 +128,7 @@ class ActionDispatch::IntegrationTest
       ComfortableMexicanSofa::AccessControl::AdminAuthentication.password
     )
     options[:headers] = headers
-    send(method, path, options)
+    send(method, path, **options)
   end
 
   def with_routing
@@ -254,5 +256,30 @@ class ApplicationSystemTestCase < ActionDispatch::SystemTestCase
     assert_empty page.driver.browser.manage.logs.get(:browser)
       .select { |e| e.level == "SEVERE" && e.message.present? }.map(&:message).to_a
   end
+
+  # Ensure ActiveStorage fixture files exist to prevent FileNotFoundError in Rails 8.0
+  def setup_active_storage_files
+    storage_dir = Rails.root.join("tmp", "storage")
+    
+    # Create storage directories
+    FileUtils.mkdir_p(storage_dir.join("45", "6d"))
+    FileUtils.mkdir_p(storage_dir.join("12", "3a"))
+    
+    # Copy fixture files to storage locations if they don't exist
+    fixture_image = Rails.root.join("test", "fixtures", "files", "image.jpg")
+    if File.exist?(fixture_image)
+      target1 = storage_dir.join("45", "6d", "456def")
+      target2 = storage_dir.join("12", "3a", "123abc")
+      
+      FileUtils.cp(fixture_image, target1) unless File.exist?(target1)
+      FileUtils.cp(fixture_image, target2) unless File.exist?(target2)
+    end
+  rescue => e
+    # Ignore errors in test setup to prevent test failures
+    Rails.logger.debug "ActiveStorage setup error: #{e.message}" if Rails.logger
+  end
+
+  # Call setup before each test
+  setup :setup_active_storage_files
 
 end

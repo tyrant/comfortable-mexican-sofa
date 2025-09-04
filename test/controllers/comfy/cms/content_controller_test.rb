@@ -19,7 +19,7 @@ class Comfy::Cms::ContentControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     assert_equal "content", response.body
-    assert_equal "text/html", response.content_type
+    assert_equal "text/html; charset=utf-8", response.content_type
 
     assert_equal :en, I18n.locale
   end
@@ -27,13 +27,13 @@ class Comfy::Cms::ContentControllerTest < ActionDispatch::IntegrationTest
   def test_show_default_html
     get comfy_cms_render_page_path(cms_path: ""), headers: { "Accept" => "*/*" }
     assert_response :success
-    assert_equal "text/html", response.content_type
+    assert_equal "text/html; charset=utf-8", response.content_type
   end
 
   def test_show_as_json
     get comfy_cms_render_page_path(cms_path: ""), as: :json
     assert_response :success
-    assert_equal "application/json", response.content_type
+    assert_equal "application/json; charset=utf-8", response.content_type
 
     json_response = JSON.parse(response.body)
     assert_equal @page.id,        json_response["id"]
@@ -58,7 +58,7 @@ class Comfy::Cms::ContentControllerTest < ActionDispatch::IntegrationTest
 
     get comfy_cms_render_page_path(cms_path: ""), as: :json
     assert_response :success
-    assert_equal "application/json", response.content_type
+    assert_equal "application/json; charset=utf-8", response.content_type
     json_response = JSON.parse(response.body)
 
     # assert_nil json_response["position"]
@@ -80,7 +80,7 @@ class Comfy::Cms::ContentControllerTest < ActionDispatch::IntegrationTest
 
     get comfy_cms_render_page_path(cms_path: ""), as: :json
     assert_response :success
-    assert_equal "application/json", response.content_type
+    assert_equal "application/json; charset=utf-8", response.content_type
     json_response = JSON.parse(response.body)
 
     assert_equal "Translation Content", json_response["content"]
@@ -119,7 +119,7 @@ class Comfy::Cms::ContentControllerTest < ActionDispatch::IntegrationTest
     )
     get comfy_cms_render_page_path(cms_path: "rss")
     assert_response :success
-    assert_equal "application/rss+xml", response.content_type
+    assert_equal "application/rss+xml; charset=utf-8", response.content_type
   end
 
   def test_show_with_app_layout
@@ -139,9 +139,8 @@ class Comfy::Cms::ContentControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_show_not_found
-    assert_exception_raised ActionController::RoutingError, 'Page Not Found at: "doesnotexist"' do
-      get comfy_cms_render_page_path(cms_path: "doesnotexist")
-    end
+    get comfy_cms_render_page_path(cms_path: "doesnotexist")
+    assert_response :not_found
   end
 
   def test_show_not_found_with_custom_404
@@ -167,9 +166,9 @@ class Comfy::Cms::ContentControllerTest < ActionDispatch::IntegrationTest
   def test_show_with_no_site
     Comfy::Cms::Site.destroy_all
 
-    assert_exception_raised ActionController::RoutingError, "Site Not Found" do
-      get comfy_cms_render_page_path(cms_path: "")
-    end
+    # Rails 8.0 might handle routing errors differently in test environment
+    get comfy_cms_render_page_path(cms_path: "")
+    assert_response :not_found
   end
 
   def test_show_with_no_layout
@@ -200,9 +199,8 @@ class Comfy::Cms::ContentControllerTest < ActionDispatch::IntegrationTest
   def test_show_unpublished
     @page.update_columns(is_published: false)
 
-    assert_exception_raised ActionController::RoutingError, 'Page Not Found at: ""' do
-      get comfy_cms_render_page_path(cms_path: "")
-    end
+    get comfy_cms_render_page_path(cms_path: "")
+    assert_response :not_found
   end
 
   def test_show_with_erb_disabled
@@ -255,18 +253,17 @@ class Comfy::Cms::ContentControllerTest < ActionDispatch::IntegrationTest
 
   def test_show_with_translation_not_found
     I18n.locale = :ja
-    assert_exception_raised ActionController::RoutingError, 'Page Not Found at: ""' do
-      get comfy_cms_render_page_path(cms_path: "")
-    end
+    get comfy_cms_render_page_path(cms_path: "")
+    assert_response :not_found
   end
 
   def test_show_with_translation_unpublished
     @translation.update_column(:is_published, false)
     I18n.locale = @translation.locale
 
-    assert_exception_raised ActionController::RoutingError, 'Page Not Found at: ""' do
-      get comfy_cms_render_page_path(cms_path: "")
-    end
+    # Rails 8.0 handles routing errors differently in test environment
+    get comfy_cms_render_page_path(cms_path: "")
+    assert_response :not_found
   end
 
   def test_with_translation_with_snippet

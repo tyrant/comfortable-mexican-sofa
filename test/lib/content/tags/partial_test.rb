@@ -37,7 +37,7 @@ class ContentTagsPartialTest < ActiveSupport::TestCase
       context: @page,
       params: ["path/to/partial", { "key" => "val" }]
     )
-    assert_equal "<%= render partial: \"path/to/partial\", locals: {\"key\"=>\"val\"} %>", tag.content
+    assert_equal "<%= render partial: \"path/to/partial\", locals: {\"key\" => \"val\"} %>", tag.content
   end
 
   def test_render
@@ -45,7 +45,7 @@ class ContentTagsPartialTest < ActiveSupport::TestCase
       context: @page,
       params: ["path/to/partial", { "key" => "val" }]
     )
-    assert_equal "<%= render partial: \"path/to/partial\", locals: {\"key\"=>\"val\"} %>", tag.render
+    assert_equal "<%= render partial: \"path/to/partial\", locals: {\"key\" => \"val\"} %>", tag.render
   end
 
   def test_render_with_whitelist
@@ -69,7 +69,7 @@ class ContentTagsPartialTest < ActiveSupport::TestCase
       context: @page,
       params: ["foo\#{:bar}", { "key" => "va\#{:l}ue" }]
     )
-    assert_equal "<%= render partial: \"foo\\\#{:bar}\", locals: {\"key\"=>\"va\\\#{:l}ue\"} %>", tag.render
+    assert_equal "<%= render partial: \"foo\\\#{:bar}\", locals: {\"key\" => \"va\\\#{:l}ue\"} %>", tag.render
   end
 
 end

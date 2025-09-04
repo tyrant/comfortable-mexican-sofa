@@ -74,26 +74,26 @@ class RevisionsTest < ActiveSupport::TestCase
 
       assert_equal ({
         "fragments_attributes" => [
-          { identifier: "boolean",
-            tag:        "checkbox",
-            content:    nil,
-            datetime:   nil,
-            boolean:    true },
-          { identifier: "file",
-            tag:        "file",
-            content:    nil,
-            datetime:   nil,
-            boolean:    false },
-          { identifier: "datetime",
-            tag:        "datetime",
-            content:    nil,
-            datetime:   comfy_cms_fragments(:datetime).datetime,
-            boolean:    false },
-          { identifier: "content",
-            tag:        "text",
-            content:    "content",
-            datetime:   nil,
-            boolean:    false }
+          { "identifier" => "boolean",
+            "tag" => "checkbox",
+            "content" => nil,
+            "datetime" => nil,
+            "boolean" => true },
+          { "identifier" => "file",
+            "tag" => "file",
+            "content" => nil,
+            "datetime" => nil,
+            "boolean" => false },
+          { "identifier" => "datetime",
+            "tag" => "datetime",
+            "content" => nil,
+            "datetime" => "1981-10-04 12:34:56 UTC",
+            "boolean" => false },
+          { "identifier" => "content",
+            "tag" => "text",
+            "content" => "content",
+            "datetime" => nil,
+            "boolean" => false }
         ]
       }), revision.data
     end

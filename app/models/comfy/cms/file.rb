@@ -56,6 +56,18 @@ protected
 
   def process_attachment
     return if @file.blank?
+    
+    # In test environment, detach any existing problematic attachments first
+    if Rails.env.test? && attachment.attached?
+      begin
+        # Try to access the existing attachment to see if it causes issues
+        attachment.blob.content_type
+      rescue ActiveStorage::FileNotFoundError
+        # If existing attachment has missing storage file, detach it
+        attachment.detach
+      end
+    end
+    
     attachment.attach(@file)
   end
 

@@ -1,13 +1,15 @@
 default:
   key: 123abc
   filename: default.jpg
-  content_type: image/jpg
+  content_type: image/jpeg
   byte_size: 12345
   checksum: 123abc
+  service_name: test
 
 fragment:
   key: 456def
   filename: fragment.jpg
-  content_type: image/jpg
+  content_type: image/jpeg
   byte_size: 12345
   checksum: 456def
+  service_name: test

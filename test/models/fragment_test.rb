@@ -9,8 +9,8 @@ class CmsFragmentTest < ActiveSupport::TestCase
     @layout = comfy_cms_layouts(:default)
     @page   = comfy_cms_pages(:default)
 
-    @upload_doc = fixture_file_upload("files/document.pdf", "application/pdf")
-    @upload_img = fixture_file_upload("files/image.jpg", "image/jpeg")
+    @upload_doc = fixture_file_upload("document.pdf", "application/pdf")
+    @upload_img = fixture_file_upload("image.jpg", "image/jpeg")
   end
 
   def page_params(frag_params = [])
@@ -119,6 +119,8 @@ class CmsFragmentTest < ActiveSupport::TestCase
 
   def test_update_with_file_removal
     frag = comfy_cms_fragments(:file)
+    assert_equal 1, frag.attachments.count
+    
     assert_difference -> { frag.attachments.count }, -1 do
       frag.update(
         file_ids_destroy: frag.attachments.pluck(:id)
