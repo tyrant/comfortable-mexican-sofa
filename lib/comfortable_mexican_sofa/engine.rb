@@ -8,17 +8,18 @@ require "active_link_to"
 require "kramdown"
 require "jquery-rails"
 require "haml-rails"
-require "sassc-rails"
 
 module ComfortableMexicanSofa
   class Engine < ::Rails::Engine
 
     initializer "comfortable_mexican_sofa.setup_assets" do
-      ::ComfortableMexicanSofa::Engine.config.assets.precompile += %w[
-        comfy/admin/cms/application.js
-        comfy/admin/cms/application.css
-        comfy/admin/cms/lib/redactor-font.eot
-      ]
+      if ::ComfortableMexicanSofa::Engine.config.respond_to?(:assets)
+        ::ComfortableMexicanSofa::Engine.config.assets.precompile += %w[
+          comfy/admin/cms/application.js
+          comfy/admin/cms/application.css
+          comfy/admin/cms/lib/redactor-font.eot
+        ]
+      end
     end
 
     config.to_prepare do

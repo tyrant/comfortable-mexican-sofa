@@ -1,0 +1,13 @@
+/*
+ * Comfortable Mexican Sofa Admin Styles
+ * 
+ *= require comfy/vendor/bootstrap.min
+ *= require comfy/vendor/codemirror
+ *= require comfy/vendor/fontawesome
+ *= require comfy/vendor/redactor
+ *= require comfy/vendor/flatpickr.min
+ *= require comfy/admin/cms/codemirror_overrides
+ *= require comfy/admin/cms/redactor_overrides
+ *= require comfy/admin/cms/base
+ *= require comfy/admin/cms/custom
+ */

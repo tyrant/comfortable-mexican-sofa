@@ -22,7 +22,7 @@ class CmsGeneratorTest < Rails::Generators::TestCase
 
     assert_file "app/assets/javascripts/comfy/admin/cms/custom.js"
 
-    assert_file "app/assets/stylesheets/comfy/admin/cms/custom.sass"
+    assert_file "app/assets/stylesheets/comfy/admin/cms/custom.css"
   end
 
 end
