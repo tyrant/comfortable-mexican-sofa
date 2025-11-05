@@ -12,10 +12,9 @@
     %meta{name: "cms-pages-path",       content: comfy_admin_cms_site_pages_path(@site)}
     %meta{name: "cms-locale",           content: I18n.locale}
 
-  %script{ src: "https://code.jquery.com/jquery-3.7.1.js", integrity: "sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=", crossorigin: "anonymous"}
-
   = stylesheet_link_tag "comfy/admin/cms/application", media: "all", "data-turbolinks-track": "reload"
-
+  = javascript_include_tag "application", "data-turbo-track": "reload"
+  
   = yield :head
 
   = comfy_admin_partial "comfy/admin/cms/partials/html_head"
