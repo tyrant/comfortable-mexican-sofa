@@ -116,8 +116,9 @@ File.open(js_output, "w") do |out|
       puts "  Adding: #{file}"
       out.puts "\n/* === #{file.sub('app/assets/javascripts/comfy/', '')} === */"
       out.puts File.read(file)
+      out.puts ";" # Ensure each file ends with semicolon to prevent concatenation issues
     else
-      puts "  ⚠️  Warning: #{file} not found, skipping..."
+      puts "⚠️  Warning: #{file} not found, skipping..."
     end
   end
 end
